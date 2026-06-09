@@ -1,4 +1,12 @@
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useState } from 'react';
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 import { router } from 'expo-router';
 
@@ -6,12 +14,38 @@ import Footer from '../components/ui/Footer';
 import Navbar from '../components/ui/Navbar';
 
 export default function Index() {
+  const [cidadeAtual, setCidadeAtual] = useState('Matão - SP');
+  const [temperatura, setTemperatura] = useState('28°');
+  const [clima, setClima] = useState('Parcialmente Nublado');
+
+  function buscarCidade(nomeCidade: string) {
+    setCidadeAtual(nomeCidade);
+
+    if (nomeCidade.toLowerCase() === 'são paulo') {
+      setTemperatura('24°');
+      setClima('Nublado');
+    } else if (
+      nomeCidade.toLowerCase() === 'rio de janeiro'
+    ) {
+      setTemperatura('32°');
+      setClima('Ensolarado');
+    } else if (
+      nomeCidade.toLowerCase() === 'curitiba'
+    ) {
+      setTemperatura('18°');
+      setClima('Chuvoso');
+    } else {
+      setTemperatura('26°');
+      setClima('Parcialmente Nublado');
+    }
+  }
+
   const cidades = [
     {
       nome: 'São Paulo',
-      temperatura: '28°',
-      clima: 'Parcialmente Nublado',
-      icone: '🌤️',
+      temperatura: '24°',
+      clima: 'Nublado',
+      icone: '☁️',
     },
     {
       nome: 'Rio de Janeiro',
@@ -21,7 +55,7 @@ export default function Index() {
     },
     {
       nome: 'Curitiba',
-      temperatura: '19°',
+      temperatura: '18°',
       clima: 'Chuvoso',
       icone: '🌧️',
     },
@@ -29,13 +63,12 @@ export default function Index() {
 
   return (
     <View style={styles.container}>
-      <Navbar />
+      <Navbar onBuscarCidade={buscarCidade} />
 
       <ScrollView>
-
         <View style={styles.cardPrincipal}>
           <Text style={styles.cidade}>
-            Matão - SP
+            {cidadeAtual}
           </Text>
 
           <Image
@@ -46,11 +79,11 @@ export default function Index() {
           />
 
           <Text style={styles.temp}>
-            28°
+            {temperatura}
           </Text>
 
           <Text style={styles.desc}>
-            Parcialmente Nublado
+            {clima}
           </Text>
         </View>
 
@@ -62,9 +95,7 @@ export default function Index() {
           <TouchableOpacity
             key={index}
             style={styles.cardCidade}
-            onPress={() =>
-              router.push('/TelaDetalhes')
-            }
+            onPress={() => router.push('/TelaDetalhes')}
           >
             <Text style={styles.emoji}>
               {cidade.icone}
@@ -100,12 +131,9 @@ const styles = StyleSheet.create({
 
   cardPrincipal: {
     backgroundColor: '#2196F3',
-
     margin: 15,
     padding: 20,
-
     borderRadius: 20,
-
     alignItems: 'center',
   },
 
@@ -135,21 +163,16 @@ const styles = StyleSheet.create({
   titulo: {
     marginHorizontal: 15,
     marginBottom: 10,
-
     fontSize: 20,
     fontWeight: 'bold',
   },
 
   cardCidade: {
     backgroundColor: '#fff',
-
     marginHorizontal: 15,
     marginBottom: 10,
-
     padding: 15,
-
     borderRadius: 15,
-
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',

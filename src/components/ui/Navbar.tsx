@@ -1,24 +1,93 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { useState } from 'react';
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
-export default function Navbar() {
+type NavbarProps = {
+  onBuscarCidade: (cidade: string) => void;
+};
+
+export default function Navbar({
+  onBuscarCidade,
+}: NavbarProps) {
+  const [cidade, setCidade] = useState('');
+
+  function buscar() {
+    if (cidade.trim() !== '') {
+      onBuscarCidade(cidade);
+      setCidade('');
+    }
+  }
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>🌤️ ClimaApp</Text>
+      <Text style={styles.title}>
+        🌤️ ClimaApp
+      </Text>
+
+      <View style={styles.searchContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="Digite uma cidade..."
+          value={cidade}
+          onChangeText={setCidade}
+        />
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={buscar}
+        >
+          <Text style={styles.buttonText}>
+            Buscar
+          </Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    height: 70,
     backgroundColor: '#1976D2',
-    justifyContent: 'center',
-    alignItems: 'center',
+    paddingTop: 20,
+    paddingBottom: 15,
+    paddingHorizontal: 15,
   },
 
   title: {
     color: '#fff',
     fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+
+  searchContainer: {
+    flexDirection: 'row',
+  },
+
+  input: {
+    flex: 1,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    height: 45,
+  },
+
+  button: {
+    backgroundColor: '#0D47A1',
+    marginLeft: 8,
+    paddingHorizontal: 15,
+    borderRadius: 10,
+    justifyContent: 'center',
+  },
+
+  buttonText: {
+    color: '#fff',
     fontWeight: 'bold',
   },
 });
