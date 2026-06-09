@@ -1,39 +1,93 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet, View, Text } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { router } from 'expo-router';
 
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
+import Footer from '../components/ui/Footer';
+import Navbar from '../components/ui/Navbar';
+
+export default function Index() {
+  const cidades = [
+    {
+      nome: 'São Paulo',
+      temperatura: '28°',
+      clima: 'Parcialmente Nublado',
+      icone: '🌤️',
+    },
+    {
+      nome: 'Rio de Janeiro',
+      temperatura: '32°',
+      clima: 'Ensolarado',
+      icone: '☀️',
+    },
+    {
+      nome: 'Curitiba',
+      temperatura: '19°',
+      clima: 'Chuvoso',
+      icone: '🌧️',
+    },
+  ];
+
   return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
+    <View style={styles.container}>
+      <Navbar />
 
-export default function HomeScreen() {
-  return (
-    <View>
-      <Text>
-        Majumadu
-      </Text>
+      <ScrollView>
+
+        <View style={styles.cardPrincipal}>
+          <Text style={styles.cidade}>
+            Matão - SP
+          </Text>
+
+          <Image
+            source={{
+              uri: 'https://cdn-icons-png.flaticon.com/512/869/869869.png',
+            }}
+            style={styles.icone}
+          />
+
+          <Text style={styles.temp}>
+            28°
+          </Text>
+
+          <Text style={styles.desc}>
+            Parcialmente Nublado
+          </Text>
+        </View>
+
+        <Text style={styles.titulo}>
+          Outras cidades
+        </Text>
+
+        {cidades.map((cidade, index) => (
+          <TouchableOpacity
+            key={index}
+            style={styles.cardCidade}
+            onPress={() =>
+              router.push('/TelaDetalhes')
+            }
+          >
+            <Text style={styles.emoji}>
+              {cidade.icone}
+            </Text>
+
+            <View>
+              <Text style={styles.nomeCidade}>
+                {cidade.nome}
+              </Text>
+
+              <Text>
+                {cidade.clima}
+              </Text>
+            </View>
+
+            <Text style={styles.tempCidade}>
+              {cidade.temperatura}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+
+      <Footer />
     </View>
   );
 }
@@ -41,35 +95,77 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    backgroundColor: '#F4F8FF',
+  },
+
+  cardPrincipal: {
+    backgroundColor: '#2196F3',
+
+    margin: 15,
+    padding: 20,
+
+    borderRadius: 20,
+
+    alignItems: 'center',
+  },
+
+  cidade: {
+    color: '#fff',
+    fontSize: 22,
+    fontWeight: 'bold',
+  },
+
+  icone: {
+    width: 120,
+    height: 120,
+    marginVertical: 10,
+  },
+
+  temp: {
+    color: '#fff',
+    fontSize: 55,
+    fontWeight: 'bold',
+  },
+
+  desc: {
+    color: '#fff',
+    fontSize: 18,
+  },
+
+  titulo: {
+    marginHorizontal: 15,
+    marginBottom: 10,
+
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+
+  cardCidade: {
+    backgroundColor: '#fff',
+
+    marginHorizontal: 15,
+    marginBottom: 10,
+
+    padding: 15,
+
+    borderRadius: 15,
+
     flexDirection: 'row',
-  },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: Spacing.four,
+    justifyContent: 'space-between',
     alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
   },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
+
+  emoji: {
+    fontSize: 35,
   },
-  title: {
-    textAlign: 'center',
+
+  nomeCidade: {
+    fontWeight: 'bold',
   },
-  code: {
-    textTransform: 'uppercase',
-  },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
+
+  tempCidade: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#1976D2',
   },
 });
