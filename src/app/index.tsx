@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import {
-  Image,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
 
 import { router } from 'expo-router';
@@ -22,6 +21,26 @@ export default function Index() {
   const [umidade, setUmidade] = useState('65%');
   const [vento, setVento] = useState('12 km/h');
   const [sensacao, setSensacao] = useState('30°');
+
+  
+ // 🌤️ ÍCONE DINÂMICO
+function getIconeClima(clima: string) {
+  const c = clima.toLowerCase();
+
+  if (c.includes('parcialmente')) return '⛅';
+
+  if (c.includes('chuva') || c.includes('chuvoso')) return '🌧️';
+
+  if (c.includes('nublado')) return '☁️';
+
+  if (c.includes('ensolarado') || c.includes('sol')) return '☀️';
+
+  if (c.includes('tempest')) return '⛈️';
+
+  if (c.includes('neve')) return '❄️';
+
+  return '🌤️';
+}
 
   function buscarCidade(nomeCidade: string) {
     setCidadeAtual(nomeCidade);
@@ -56,12 +75,26 @@ export default function Index() {
   }
 
   const cidades = [
-    { nome: 'São Paulo', temperatura: '24°', clima: 'Nublado', icone: '☁️' },
-    { nome: 'Rio de Janeiro', temperatura: '32°', clima: 'Ensolarado', icone: '☀️' },
-    { nome: 'Curitiba', temperatura: '18°', clima: 'Chuvoso', icone: '🌧️' },
+    {
+      nome: 'São Paulo',
+      temperatura: '24°',
+      clima: 'Nublado',
+      icone: '☁️',
+    },
+    {
+      nome: 'Rio de Janeiro',
+      temperatura: '32°',
+      clima: 'Ensolarado',
+      icone: '☀️',
+    },
+    {
+      nome: 'Curitiba',
+      temperatura: '18°',
+      clima: 'Chuvoso',
+      icone: '🌧️',
+    },
   ];
 
-  // 🔥 FUNÇÃO RESTAURADA (NAVEGAÇÃO CORRETA)
   function abrirDetalhes(cidade: any) {
     router.push({
       pathname: '/TelaDetalhes',
@@ -81,39 +114,60 @@ export default function Index() {
 
         {/* CARD PRINCIPAL */}
         <View style={styles.cardPrincipal}>
-          <Text style={styles.cidade}>{cidadeAtual}</Text>
+          <Text style={styles.cidade}>
+            {cidadeAtual}
+          </Text>
 
-          <Image
-            source={{
-              uri: 'https://cdn-icons-png.flaticon.com/512/869/869869.png',
-            }}
-            style={styles.icone}
-          />
+          <Text style={styles.iconeClima}>
+            {getIconeClima(clima)}
+          </Text>
 
-          <Text style={styles.temp}>{temperatura}</Text>
-          <Text style={styles.desc}>{clima}</Text>
+          <Text style={styles.temp}>
+            {temperatura}
+          </Text>
+
+          <Text style={styles.desc}>
+            {clima}
+          </Text>
 
           <View style={styles.detalhes}>
-            <Text style={styles.info}>💧 {umidade}</Text>
-            <Text style={styles.info}>💨 {vento}</Text>
-            <Text style={styles.info}>🌡️ {sensacao}</Text>
+            <Text style={styles.info}>
+              💧 {umidade}
+            </Text>
+
+            <Text style={styles.info}>
+              💨 {vento}
+            </Text>
+
+            <Text style={styles.info}>
+              🌡️ {sensacao}
+            </Text>
           </View>
         </View>
 
-        {/* OUTRAS CIDADES (AGORA COM NAVEGAÇÃO REAL) */}
-        <Text style={styles.titulo}>Outras cidades</Text>
+        {/* OUTRAS CIDADES */}
+        <Text style={styles.titulo}>
+          Outras cidades
+        </Text>
 
         {cidades.map((cidade, index) => (
           <TouchableOpacity
             key={index}
             style={styles.cardCidade}
-            onPress={() => abrirDetalhes(cidade)}   // 🔥 AQUI VOLTOU A CONEXÃO
+            onPress={() => abrirDetalhes(cidade)}
           >
-            <Text style={styles.emoji}>{cidade.icone}</Text>
+            <Text style={styles.emoji}>
+              {cidade.icone}
+            </Text>
 
             <View>
-              <Text style={styles.nome}>{cidade.nome}</Text>
-              <Text>{cidade.clima}</Text>
+              <Text style={styles.nome}>
+                {cidade.nome}
+              </Text>
+
+              <Text>
+                {cidade.clima}
+              </Text>
             </View>
 
             <Text style={styles.tempCidade}>
@@ -149,9 +203,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
-  icone: {
-    width: 110,
-    height: 110,
+  iconeClima: {
+    fontSize: 80,
     marginVertical: 10,
   },
 

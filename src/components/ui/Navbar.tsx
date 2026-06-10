@@ -8,16 +8,18 @@ import {
 } from 'react-native';
 
 type NavbarProps = {
-  onBuscarCidade: (cidade: string) => void;
+  onBuscarCidade?: (cidade: string) => void;
+  mostrarBusca?: boolean;
 };
 
 export default function Navbar({
   onBuscarCidade,
+  mostrarBusca = true,
 }: NavbarProps) {
   const [cidade, setCidade] = useState('');
 
   function buscar() {
-    if (cidade.trim() !== '') {
+    if (cidade.trim() !== '' && onBuscarCidade) {
       onBuscarCidade(cidade);
       setCidade('');
     }
@@ -29,23 +31,26 @@ export default function Navbar({
         🌤️ ClimaApp
       </Text>
 
-      <View style={styles.searchContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Digite uma cidade..."
-          value={cidade}
-          onChangeText={setCidade}
-        />
+      {/* 🔥 BUSCA CONDICIONAL */}
+      {mostrarBusca && (
+        <View style={styles.searchContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="Digite uma cidade..."
+            value={cidade}
+            onChangeText={setCidade}
+          />
 
-        <TouchableOpacity
-          style={styles.button}
-          onPress={buscar}
-        >
-          <Text style={styles.buttonText}>
-            Buscar
-          </Text>
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={buscar}
+          >
+            <Text style={styles.buttonText}>
+              Buscar
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 }
