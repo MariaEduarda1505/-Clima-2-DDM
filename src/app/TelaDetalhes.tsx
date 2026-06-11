@@ -12,18 +12,35 @@ export default function TelaDetalhes() {
   const temp = Array.isArray(temperatura) ? temperatura[0] : temperatura ?? '';
   const climaTexto = Array.isArray(clima) ? clima[0] : clima ?? '';
 
-  function getIconeClima(clima: string) {
-    const c = clima.toLowerCase();
+function getIconeClima(clima: string) {
+  const c = clima.toLowerCase();
 
-    if (c.includes('chuva')) return '🌧️';
-    if (c.includes('nublado')) return '☁️';
-    if (c.includes('parcialmente')) return '⛅';
-    if (c.includes('ensolarado')) return '☀️';
-    if (c.includes('tempest')) return '⛈️';
-    if (c.includes('neve')) return '❄️';
+  if (c.includes('parcialmente')) return '⛅';
 
-    return '🌤️';
+  if (
+    c.includes('chuva') ||
+    c.includes('chuvoso') ||
+    c.includes('chuvosa')
+  ) {
+    return '🌧️';
   }
+
+  if (c.includes('nublado')) return '☁️';
+
+  if (
+    c.includes('ensolarado') ||
+    c.includes('ensolarada') ||
+    c.includes('sol')
+  ) {
+    return '☀️';
+  }
+
+  if (c.includes('tempest')) return '⛈️';
+
+  if (c.includes('neve')) return '❄️';
+
+  return '🌤️';
+}
 
   function getImagemCidade(nomeCidade: string) {
     const c = nomeCidade.toLowerCase();
