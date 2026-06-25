@@ -1,5 +1,12 @@
-import { useLocalSearchParams } from 'expo-router';
-import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { router, useLocalSearchParams } from 'expo-router';
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 import Footer from '../components/ui/Footer';
 import Navbar from '../components/ui/Navbar';
@@ -7,40 +14,22 @@ import Navbar from '../components/ui/Navbar';
 export default function TelaDetalhes() {
   const { nome, temperatura, clima } = useLocalSearchParams();
 
-  // 🔥 normalização segura
   const nomeCidade = Array.isArray(nome) ? nome[0] : nome ?? '';
   const temp = Array.isArray(temperatura) ? temperatura[0] : temperatura ?? '';
   const climaTexto = Array.isArray(clima) ? clima[0] : clima ?? '';
 
-function getIconeClima(clima: string) {
-  const c = clima.toLowerCase();
+  function getIconeClima(clima: string) {
+    const c = clima.toLowerCase();
 
-  if (c.includes('parcialmente')) return '⛅';
+    if (c.includes('parcialmente')) return '⛅';
+    if (c.includes('chuva') || c.includes('chuvoso') || c.includes('chuvosa')) return '🌧️';
+    if (c.includes('nublado')) return '☁️';
+    if (c.includes('ensolarado') || c.includes('ensolarada') || c.includes('sol')) return '☀️';
+    if (c.includes('tempest')) return '⛈️';
+    if (c.includes('neve')) return '❄️';
 
-  if (
-    c.includes('chuva') ||
-    c.includes('chuvoso') ||
-    c.includes('chuvosa')
-  ) {
-    return '🌧️';
+    return '🌤️';
   }
-
-  if (c.includes('nublado')) return '☁️';
-
-  if (
-    c.includes('ensolarado') ||
-    c.includes('ensolarada') ||
-    c.includes('sol')
-  ) {
-    return '☀️';
-  }
-
-  if (c.includes('tempest')) return '⛈️';
-
-  if (c.includes('neve')) return '❄️';
-
-  return '🌤️';
-}
 
   function getImagemCidade(nomeCidade: string) {
     const c = nomeCidade.toLowerCase();
@@ -65,41 +54,30 @@ function getIconeClima(clima: string) {
 
   return (
     <View style={styles.container}>
-
       <Navbar mostrarBusca={false} />
 
       <ScrollView>
-
-        <Image
-          source={{ uri: imagemCidade }}
-          style={styles.imagem}
-        />
+        <Image source={{ uri: imagemCidade }} style={styles.imagem} />
 
         <View style={styles.card}>
-
-          <Text style={styles.cidade}>
-            {nomeCidade}
-          </Text>
-
-          <Text style={styles.icone}>
-            {icone}
-          </Text>
-
-          <Text style={styles.temp}>
-            {temp}
-          </Text>
-
-          <Text style={styles.clima}>
-            {climaTexto}
-          </Text>
+          <Text style={styles.cidade}>{nomeCidade}</Text>
+          <Text style={styles.icone}>{icone}</Text>
+          <Text style={styles.temp}>{temp}</Text>
+          <Text style={styles.clima}>{climaTexto}</Text>
 
           <View style={styles.infoBox}>
             <Text style={styles.info}>💧 Umidade: 60%</Text>
             <Text style={styles.info}>🌬️ Vento: 12 km/h</Text>
             <Text style={styles.info}>🌡️ Sensação térmica: 30°</Text>
           </View>
-
         </View>
+
+        <TouchableOpacity
+          style={styles.botaoVoltar}
+          onPress={() => router.replace('/')}
+        >
+          <Text style={styles.textoBotaoVoltar}>← Voltar para Início</Text>
+        </TouchableOpacity>
 
         <Text style={styles.titulo}>Próximas Horas</Text>
 
@@ -122,14 +100,13 @@ function getIconeClima(clima: string) {
             <Text>{temp} / 20°</Text>
           </View>
         ))}
-
       </ScrollView>
 
       <Footer />
-
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -180,6 +157,21 @@ const styles = StyleSheet.create({
   info: {
     color: '#fff',
     marginTop: 4,
+  },
+
+  botaoVoltar: {
+    backgroundColor: '#1565C0',
+    marginHorizontal: 15,
+    marginBottom: 10,
+    paddingVertical: 14,
+    borderRadius: 14,
+    alignItems: 'center',
+  },
+
+  textoBotaoVoltar: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 
   titulo: {
