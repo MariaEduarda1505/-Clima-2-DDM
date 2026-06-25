@@ -1,6 +1,7 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import {
     ScrollView,
+    Share,
     StyleSheet,
     Text,
     TouchableOpacity,
@@ -130,15 +131,58 @@ export default function TelaTendencia() {
   const maiorTemperatura = Math.max(...dadosSemanais.map((item) => item.temp));
   const alturaMaxima = 140;
 
+  async function compartilharTendencia() {
+    const mensagem = `📅 Tendência do mês em ${nomeCidade}
+
+Clima atual: ${icone} ${climaTexto}
+Temperatura atual: ${tempAtual}
+
+Temperatura média por semana:
+• ${dadosSemanais[0].semana}: ${dadosSemanais[0].temp}°
+• ${dadosSemanais[1].semana}: ${dadosSemanais[1].temp}°
+• ${dadosSemanais[2].semana}: ${dadosSemanais[2].temp}°
+• ${dadosSemanais[3].semana}: ${dadosSemanais[3].temp}°
+
+Chuva prevista:
+• ${dadosSemanais[0].semana}: ${dadosSemanais[0].chuva}%
+• ${dadosSemanais[1].semana}: ${dadosSemanais[1].chuva}%
+• ${dadosSemanais[2].semana}: ${dadosSemanais[2].chuva}%
+• ${dadosSemanais[3].semana}: ${dadosSemanais[3].chuva}%
+
+Destaques do mês:
+🔥 Semana mais quente: ${semanaMaisQuente.semana}
+🌧️ Maior chance de chuva: ${semanaMaisChuvosa.semana}
+
+${resumo}`;
+
+    try {
+      await Share.share({
+        message: mensagem,
+        title: `Tendência do mês - ${nomeCidade}`,
+      });
+    } catch (error) {
+      console.log('Erro ao compartilhar:', error);
+    }
+  }
+
   return (
     <View style={styles.container}>
       <Navbar mostrarBusca={false} />
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        {/* BOTÃO VOLTAR */}
-        <TouchableOpacity style={styles.botaoVoltar} onPress={() => router.back()}>
-          <Text style={styles.textoVoltar}>← Voltar</Text>
-        </TouchableOpacity>
+        {/* BOTÕES SUPERIORES */}
+        <View style={styles.topButtons}>
+          <TouchableOpacity style={styles.botaoVoltar} onPress={() => router.back()}>
+            <Text style={styles.textoVoltar}>← Voltar</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.botaoCompartilhar}
+            onPress={compartilharTendencia}
+          >
+            <Text style={styles.textoCompartilhar}>Compartilhar</Text>
+          </TouchableOpacity>
+        </View>
 
         {/* CARD RESUMO */}
         <View style={styles.cardResumo}>
@@ -149,9 +193,7 @@ export default function TelaTendencia() {
 
           <Text style={styles.clima}>{climaTexto}</Text>
 
-          <Text style={styles.resumo}>
-            {resumo}
-          </Text>
+          <Text style={styles.resumo}>{resumo}</Text>
         </View>
 
         {/* GRÁFICO DE TEMPERATURA */}
@@ -225,10 +267,15 @@ const styles = StyleSheet.create({
     paddingBottom: 30,
   },
 
-  botaoVoltar: {
+  topButtons: {
     marginTop: 15,
     marginHorizontal: 15,
-    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 10,
+  },
+
+  botaoVoltar: {
     backgroundColor: '#fff',
     paddingVertical: 10,
     paddingHorizontal: 16,
@@ -237,6 +284,19 @@ const styles = StyleSheet.create({
 
   textoVoltar: {
     color: '#1976D2',
+    fontWeight: 'bold',
+    fontSize: 15,
+  },
+
+  botaoCompartilhar: {
+    backgroundColor: '#2196F3',
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+  },
+
+  textoCompartilhar: {
+    color: '#fff',
     fontWeight: 'bold',
     fontSize: 15,
   },
