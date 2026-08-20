@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -19,6 +19,10 @@ type Cidade = {
 };
 
 export default function Index() {
+  useEffect(() => {
+    router.replace('/login');
+  }, []);
+
   const [cidadeAtual, setCidadeAtual] = useState('Matão - SP');
   const [temperatura, setTemperatura] = useState('28°');
   const [clima, setClima] = useState('Parcialmente Nublado');
@@ -51,9 +55,21 @@ export default function Index() {
     const c = climaTexto.toLowerCase();
 
     if (c.includes('parcialmente')) return '⛅';
-    if (c.includes('chuva') || c.includes('chuvoso') || c.includes('chuvosa')) return '🌧️';
+    if (
+      c.includes('chuva') ||
+      c.includes('chuvoso') ||
+      c.includes('chuvosa')
+    ) {
+      return '🌧️';
+    }
     if (c.includes('nublado')) return '☁️';
-    if (c.includes('ensolarado') || c.includes('ensolarada') || c.includes('sol')) return '☀️';
+    if (
+      c.includes('ensolarado') ||
+      c.includes('ensolarada') ||
+      c.includes('sol')
+    ) {
+      return '☀️';
+    }
     if (c.includes('tempest')) return '⛈️';
     if (c.includes('neve')) return '❄️';
 
@@ -97,7 +113,6 @@ export default function Index() {
       setVento('12 km/h');
       setSensacao('30°');
     } else {
-      // cidade genérica
       setTemperatura('26°');
       setClima('Parcialmente Nublado');
       setUmidade('65%');
